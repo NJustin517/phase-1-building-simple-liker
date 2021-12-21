@@ -1,20 +1,45 @@
 // Defining text characters for the empty and full hearts for you to use later.
-const EMPTY_HEART = '♡'
-const FULL_HEART = '♥'
+const EMPTY_HEART = "♡";
+const FULL_HEART = "♥";
 
 // Your JavaScript code goes here!
+const heartIcons = document.querySelectorAll(".like-glyph");
+console.log(heartIcons);
+heartIcons.forEach((icon) => {
+  icon.addEventListener("click", serverPost);
+});
 
+function serverPost(e) {
+  console.log(e.target);
+  mimicServerCall()
+    .then((response) => {
+      const heart = e.target;
+      if (heart.textContent === EMPTY_HEART) {
+        heart.classList.add("activated-heart");
+        heart.textContent = FULL_HEART;
+      } else {
+        heart.classList.remove("activated-heart");
+        heart.textContent = EMPTY_HEART;
+      }
+    })
+    .catch((error) => {
+      const errorModal = document.querySelector("#modal");
+      const h = errorModal.querySelector("h2");
+      setTimeout(() => errorModal.classList.add("hidden"), 3000);
+      h.textContent = error;
+      errorModal.classList.remove("hidden");
+    });
+}
 
-
-
+serverPost();
 //------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
 //------------------------------------------------------------------------------
 
-function mimicServerCall(url="http://mimicServer.example.com", config={}) {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
-      let isRandomFailure = Math.random() < .2
+function mimicServerCall(url = "http://mimicServer.example.com", config = {}) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      let isRandomFailure = Math.random() < 0.2;
       if (isRandomFailure) {
         reject("Random server error. Try again.");
       } else {
